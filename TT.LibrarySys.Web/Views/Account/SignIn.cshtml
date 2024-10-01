@@ -1,0 +1,45 @@
+﻿@model TT.LibrarySys.DataAccess.Models.User
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <link rel="stylesheet" href="~/css/site.css">
+</head>
+<body>
+    <div class="login-container">
+
+        <div class="login-box">
+            <h2>LOGIN</h2>
+            <form asp-action="SignIn" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="text-danger">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <p>@error.ErrorMessage</p>
+                        }
+                    </div>
+                }
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+

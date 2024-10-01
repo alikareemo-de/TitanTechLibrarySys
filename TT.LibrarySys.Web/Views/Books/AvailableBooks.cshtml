@@ -1,0 +1,93 @@
+﻿@model List<TT.LibrarySys.DataAccess.Models.Book>
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary mb-4">Available Books</h2>
+
+    <form asp-action="SearchBooks" method="get">
+        <div class="input-group mb-3">
+            <input type="text" id="searchInput" name="searchTerm" class="form-control" placeholder="Search for books by title, author, or ISBN">
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <form asp-action="BorrowBooks" method="post">
+        <div id="booksGrid" class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var book in Model)
+            {
+                <div class="col book-card" style="display:block;">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">@book.Title</h5>
+                            <p class="card-text">@book.Author</p>
+                            <p class="card-text">@book.ISBN</p>
+                            @if (book.IsAvailable)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="bookIds" value="@book.BookId" />
+                                    <label class="form-check-label" for="bookIds">Select</label>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Not Available</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="d-grid gap-2 d-md-block mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">Borrow Selected Books</button>
+        </div>
+    </form>
+
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul id="pagination" class="pagination justify-content-center"></ul>
+    </nav>
+</div>
+
+<script>
+    var booksPerPage = 15;
+    var currentPage = 1;
+    var bookCards = document.getElementsByClassName('book-card');
+
+    function showPage(page) {
+        var start = (page - 1) * booksPerPage;
+        var end = start + booksPerPage;
+        for (var i = 0; i < bookCards.length; i++) {
+            if (i >= start && i < end) {
+                bookCards[i].style.display = 'block';
+            } else {
+                bookCards[i].style.display = 'none';
+            }
+        }
+        updatePagination();
+    }
+
+    function updatePagination() {
+        var totalPages = Math.ceil(bookCards.length / booksPerPage);
+        var pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+
+        for (var i = 1; i <= totalPages; i++) {
+            var li = document.createElement('li');
+            li.className = 'page-item' + (i === currentPage ? ' active' : '');
+            li.innerHTML = '<a class="page-link" href="#" onclick="changePage(' + i + ')">' + i + '</a>';
+            pagination.appendChild(li);
+        }
+    }
+
+    function changePage(page) {
+        currentPage = page;
+        showPage(page);
+    }
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        showPage(currentPage);
+    });
+</script>

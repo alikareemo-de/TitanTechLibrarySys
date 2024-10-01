@@ -1,0 +1,47 @@
+﻿@using TT.LibrarySys.DataAccess.Models
+@model List<TT.LibrarySys.DataAccess.Models.Borrowing>
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary mb-4">Pending Borrowing Requests</h2>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>ISBN</th>
+                <th>User Name</th>
+                <th>Email</th>
+                <th>Borrow Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var borrowing in Model)
+            {
+                <tr>
+                    <td>@borrowing.Book.Title</td>
+                    <td>@borrowing.Book.Author</td>
+                    <td>@borrowing.Book.ISBN</td>
+                    <td>@borrowing.User.UserName</td>
+                    <td>@borrowing.User.Email</td>
+                    <td>@borrowing.BorrowDate.ToShortDateString()</td>
+                    <td>
+                        <form asp-action="ApproveRequest" method="post" style="display:inline">
+                            <input type="hidden" name="borrowingId" value="@borrowing.BorrowingId" />
+                            <input type="hidden" name="status" value="@BorrowingStatus.Approved" />
+                            <button type="submit" class="btn btn-success me-2">Approve</button>
+                        </form>
+
+                        <form asp-action="RejectRequest" method="post" style="display:inline">
+                            <input type="hidden" name="borrowingId" value="@borrowing.BorrowingId" />
+                            <input type="hidden" name="status" value="@BorrowingStatus.Rejected" />
+                            <button type="submit" class="btn btn-danger">Reject</button>
+                        </form>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

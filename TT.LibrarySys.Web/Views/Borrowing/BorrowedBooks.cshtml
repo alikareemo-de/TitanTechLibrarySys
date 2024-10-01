@@ -1,0 +1,64 @@
+﻿@using TT.LibrarySys.DataAccess.Models
+@model List<TT.LibrarySys.DataAccess.Models.Borrowing>
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary mb-4">Borrowed Books</h2>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>ISBN</th>
+                <th>Borrow Date</th>
+                <th>Status</th>
+                <th>Return</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var borrowing in Model)
+            {
+                <tr>
+                    <td>@borrowing.Book.Title</td>
+                    <td>@borrowing.Book.Author</td>
+                    <td>@borrowing.Book.ISBN</td>
+                    <td>@borrowing.BorrowDate.ToShortDateString()</td>
+                    <td>
+                        @switch (borrowing.Status)
+                        {
+                            case BorrowingStatus.Pending:
+                                <span class="badge bg-warning text-dark">Pending</span>
+                                ;
+                                break;
+                            case BorrowingStatus.Approved:
+                                <span class="badge bg-success">Approved</span>
+                                ;
+                                break;
+                            case BorrowingStatus.Rejected:
+                                <span class="badge bg-danger">Rejected</span>
+                                ;
+                                break;
+                        }
+                    </td>
+                    <td>
+                        @if (borrowing.Status == BorrowingStatus.Approved && borrowing.ReturnDate == null)
+                        {
+                            <form asp-action="ReturnBook" method="post">
+                                <input type="hidden" name="borrowingId" value="@borrowing.BorrowingId" />
+                                <button type="submit" class="btn btn-danger">Return</button>
+                            </form>
+                        }
+                        else if (borrowing.Status == BorrowingStatus.Approved && borrowing.ReturnDate != null)
+                        {
+                            <span class="text-success">Returned on @borrowing.ReturnDate.Value.ToShortDateString()</span>
+                        }
+                        else
+                        {
+                            <span>Returned</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
