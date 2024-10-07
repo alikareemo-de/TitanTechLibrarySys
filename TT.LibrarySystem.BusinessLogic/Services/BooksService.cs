@@ -9,7 +9,7 @@ namespace TT.LibrarySystem.BusinessLogic
 
         private readonly IBooksRepository _booksRepository;
 
-        public BooksService(IBooksRepository booksRepository, IBorrowingRepository @object)
+        public BooksService(IBooksRepository booksRepository)
         {
 
             _booksRepository = booksRepository;
